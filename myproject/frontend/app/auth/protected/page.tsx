@@ -29,6 +29,12 @@
         <div style={{ padding: 40 }}>
         <h1>Protected Page</h1>
         <p>{message}</p>
+         <button
+            onClick={() => router.push("/auth/profile")}
+            className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+            >
+            Go to Profile
+        </button>
 
         <button
             onClick={() => {
@@ -37,7 +43,7 @@
             router.push("/auth/login");
             }}
         >
-            Logout
+              Logout
         </button>
         </div>
     );
