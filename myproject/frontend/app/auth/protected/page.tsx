@@ -2,29 +2,28 @@
 
     import { useEffect, useState } from "react";
     import { useRouter } from "next/navigation";
+    import { fetchWithAuth } from "@/utils/auth";
+
 
     export default function ProtectedPage() {
     const router = useRouter();
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        const access = localStorage.getItem("access");
-
-        if (!access) {
+        useEffect(() => {
+    async function loadData() {
+        const res = await fetchWithAuth("http://127.0.0.1:8000/api/secret/");
+        if (!res) {
         router.push("/auth/login");
         return;
         }
 
-        fetch("http://127.0.0.1:8000/api/secret/", {
-        headers: { Authorization: `Bearer ${access}` },
-        })
-        .then(async (res) => {
-            if (res.status === 401) router.push("/auth/login");
-            const data = await res.json();
-            setMessage(data.message);
-        })
-        .catch(() => router.push("/auth/login"));
+        const data = await res.json();
+        setMessage(data.message);
+    }
+
+    loadData();
     }, []);
+
 
     return (
         <div style={{ padding: 40 }}>
