@@ -6,6 +6,9 @@ import AuthCard from "@/components/AuthCard";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -15,9 +18,15 @@ export default function LoginPage() {
     e.preventDefault();
 
     const res = await fetch("http://127.0.0.1:8000/api/auth/login/", {
+      
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+              email: email,
+              password: password,
+            })
+
     });
 
     const data = await res.json();
