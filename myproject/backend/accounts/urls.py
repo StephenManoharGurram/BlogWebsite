@@ -19,6 +19,4 @@ urlpatterns = [
     path("reset-password/", reset_password),
     path('login/', login_view),
     path("register/", register_view),
-
-
 ]
