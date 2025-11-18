@@ -29,6 +29,6 @@ def secret(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('accounts.urls')),  # Login, register, refresh
-    path('api/secret/', secret),                 
+    path('api/auth/', include('accounts.urls')),  
+    path('api/secret/', secret),
 ]
