@@ -113,16 +113,17 @@ def verify_otp(request):
         "refresh": str(refresh),
     })
 
-@api_view(["POST"])
+@api_view(['POST'])
 def forgot_password(request):
     email = request.data.get("email")
 
     if not email:
         return Response({"error": "Email required"}, status=400)
 
+    # Check user exists
     user = User.objects.filter(email=email).first()
     if not user:
-        return Response({"error": "No account with this email"}, status=400)
+        return Response({"error": "No user with this email"}, status=400)
 
     otp = str(random.randint(100000, 999999))
 
@@ -132,30 +133,30 @@ def forgot_password(request):
     )
 
     send_mail(
-        subject="Your password reset code",
+        subject="Password Reset OTP",
         message=f"Your OTP is {otp}. It expires in 5 minutes.",
-        from_email="no-reply@example.com",
+        from_email=settings.EMAIL_HOST_USER,
         recipient_list=[email],
+        fail_silently=False,
     )
 
     return Response({"message": "OTP sent"})
 
 
-@api_view(["POST"])
+@api_view(['POST'])
 def reset_password(request):
     email = request.data.get("email")
     otp = request.data.get("otp")
     new_password = request.data.get("new_password")
 
     if not all([email, otp, new_password]):
-        return Response({"error": "Missing fields"}, status=400)
+        return Response({"error": "Email, OTP, and new password are required"}, status=400)
 
-    try:
-        otp_obj = PasswordResetOTP.objects.get(email=email)
-    except PasswordResetOTP.DoesNotExist:
-        return Response({"error": "OTP not found"}, status=400)
+    otp_obj = PasswordResetOTP.objects.filter(email=email).first()
+    if not otp_obj:
+        return Response({"error": "No OTP request found"}, status=400)
 
-    # expired?
+    # Expired?
     if otp_obj.created_at < timezone.now() - timedelta(minutes=5):
         otp_obj.delete()
         return Response({"error": "OTP expired"}, status=400)
@@ -163,23 +164,16 @@ def reset_password(request):
     if otp_obj.otp != otp:
         return Response({"error": "Invalid OTP"}, status=400)
 
+    # Reset password
     user = User.objects.filter(email=email).first()
-    if not user:
-        return Response({"error": "User not found"}, status=400)
-
-    # reset password
     user.set_password(new_password)
     user.save()
 
+    # remove OTP
     otp_obj.delete()
 
-    refresh = RefreshToken.for_user(user)
+    return Response({"message": "Password reset successful"})
 
-    return Response({
-        "message": "Password reset successful",
-        "access": str(refresh.access_token),
-        "refresh": str(refresh)
-    })
 
 @api_view(['POST'])
 def login_view(request):
