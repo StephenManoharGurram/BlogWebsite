@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* Staggered fade + slide-up animation */
+.fade-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 1s ease-out forwards;
+}
+
+/* Keyframe for fade-up */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger timing */
+.fade-item:nth-child(1) { animation-delay: 0.2s; }
+.fade-item:nth-child(2) { animation-delay: 0.4s; }
+.fade-item:nth-child(3) { animation-delay: 0.6s; }
+.fade-item:nth-child(4) { animation-delay: 0.8s; }
+.fade-item:nth-child(5) { animation-delay: 1.0s; }
+.fade-item:nth-child(6) { animation-delay: 1.2s; }
