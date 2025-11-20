@@ -1,71 +1,75 @@
 "use client";
+import { useEffect, useState } from "react";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import AuthCard from "@/components/AuthCard";
+export default function HomePage() {
+  const [pos, setPos] = useState({ x: 50, y: 50 });
 
-export default function LoginPage() {
-  const router = useRouter();
-  
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      setPos({
+        x: (e.clientX / window.innerWidth) * 100,
+        y: (e.clientY / window.innerHeight) * 100,
+      });
+    };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+    const handleTouch = (e: TouchEvent) => {
+      const t = e.touches[0];
+      setPos({
+        x: (t.clientX / window.innerWidth) * 100,
+        y: (t.clientY / window.innerHeight) * 100,
+      });
+    };
 
-    const res = await fetch("http://127.0.0.1:8000/api/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    });
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("touchmove", handleTouch);
 
-    const data = await res.json();
-
-    if (res.status === 200) {
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-      router.push("/auth/protected");
-    } else {
-      alert(data.error || "Invalid login.");
-    }
-  };
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("touchmove", handleTouch);
+    };
+  }, []);
 
   return (
-    <AuthCard title="Login">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full border rounded-md px-3 py-2"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <div className="relative w-full min-h-[300vh] flex flex-col items-center justify-start overflow-hidden">
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border rounded-md px-3 py-2"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      {/* Royal Green Background */}
+      <div className="absolute inset-0 bg-[#0b3d2e]" />
 
-        <button className="w-full bg-blue-600 text-white rounded-md py-2">
-          Login
-        </button>
+      {/* Interactive Spotlight */}
+      <div
+        className="absolute inset-0 transition-all duration-200 pointer-events-none"
+        style={{
+          background: `radial-gradient(
+            circle at ${pos.x}% ${pos.y}%,
+            rgba(255, 255, 255, 0.15),
+            transparent 60%
+          )`,
+        }}
+      />
 
-        {/* Forgot Password Link */}
-        <button
-          type="button"
-          className="w-full text-blue-500 underline"
-          onClick={() => router.push("/auth/forgot-password")}
-        >
-          Forgot Password?
-        </button>
-      </form>
-    </AuthCard>
+      {/* SPACING BEFORE MESSAGE CARD */}
+      <div className="h-[25vh]" />
+
+      {/* WIDE MESSAGE CARD (80% WIDTH) */}
+      <div
+        className="
+          relative z-10 
+          w-[85%] sm:w-[80%] 
+          p-10 sm:p-14 
+          rounded-3xl shadow-2xl 
+          border 
+          mx-auto
+        "
+        style={{
+          backgroundColor: "#ECF5E8",   // harmonious green-cream
+          borderColor: "#778873",       // deep moss
+        }}
+      >
+      </div>
+
+      {/* EXTRA SPACE BELOW - enables a full 3-screen scroll */}
+      <div className="h-[200vh]" />
+
+    </div>
   );
 }
