@@ -31,7 +31,15 @@ body {
   animation: fadeUp 1s ease-out forwards;
 }
 
-/* Keyframe for fade-up */
+
+/* Staggered fade + slide-up animation */
+.fade-item {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 1s ease-out forwards;
+}
+
+/* Keyframes */
 @keyframes fadeUp {
   to {
     opacity: 1;
