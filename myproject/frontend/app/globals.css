@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* Theme vars */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,22 +25,51 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-/* Staggered fade + slide-up animation */
+
+/* ========================================================= */
+/*                       ANIMATIONS                          */
+/* ========================================================= */
+
+/* Fade In Hero */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0px); }
+}
+.animate-fadeIn {
+  animation: fadeIn 1.2s ease-out forwards;
+}
+
+/* Floating Card */
+@keyframes floatSmooth {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+.floating-card {
+  animation: floatSmooth 6s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+.floating-card:hover {
+  transform: scale(1.02);
+}
+
+/* Glow Effect */
+@keyframes softGlow {
+  0% { box-shadow: 0 0 15px rgba(255,255,255,0.15); }
+  50% { box-shadow: 0 0 30px rgba(255,255,255,0.35); }
+  100% { box-shadow: 0 0 15px rgba(255,255,255,0.15); }
+}
+.glow-card {
+  animation: softGlow 5s ease-in-out infinite;
+}
+
+/* Staggered fade-up items */
 .fade-item {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 1s ease-out forwards;
 }
 
-
-/* Staggered fade + slide-up animation */
-.fade-item {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 1s ease-out forwards;
-}
-
-/* Keyframes */
 @keyframes fadeUp {
   to {
     opacity: 1;
@@ -47,10 +77,9 @@ body {
   }
 }
 
-/* Stagger timing */
 .fade-item:nth-child(1) { animation-delay: 0.2s; }
 .fade-item:nth-child(2) { animation-delay: 0.4s; }
 .fade-item:nth-child(3) { animation-delay: 0.6s; }
 .fade-item:nth-child(4) { animation-delay: 0.8s; }
-.fade-item:nth-child(5) { animation-delay: 1.0s; }
+.fade-item:nth-child(5) { animation-delay: 1s; }
 .fade-item:nth-child(6) { animation-delay: 1.2s; }
